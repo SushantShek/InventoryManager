@@ -1,7 +1,7 @@
 package com.example.warehouse.manager.service;
 
 import com.example.warehouse.manager.domain.Article;
-import com.example.warehouse.manager.domain.Catalogue;
+import com.example.warehouse.manager.domain.ProductCatalogue;
 import com.example.warehouse.manager.domain.Inventory;
 import com.example.warehouse.manager.domain.Products;
 import com.example.warehouse.manager.repository.WarehouseCatalogueRepository;
@@ -33,9 +33,9 @@ public class WarehouseProductService {
     public String loadProductFile(MultipartFile file) throws IOException {
         // read json and write to db/cache
         String fileContentString = MultipartFileReader.saveFileAndGetContent(file);
-        Catalogue catalogue = mapper.readValue(fileContentString, Catalogue.class);
+        ProductCatalogue productCatalogue = mapper.readValue(fileContentString, ProductCatalogue.class);
 
-        return productRepository.save(catalogue);
+        return productRepository.save(productCatalogue);
     }
 
     /**

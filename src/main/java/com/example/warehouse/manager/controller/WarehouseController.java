@@ -104,7 +104,7 @@ public class WarehouseController {
      * @param file Inventory.json
      * @return Update confirmation
      */
-    @PostMapping(path = "/products")
+    @PostMapping(path = "/product")
     public ResponseEntity<String> loadProduct(@RequestPart("file") MultipartFile file) {
         if (null == file.getOriginalFilename()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -123,7 +123,7 @@ public class WarehouseController {
      *
      * @return JSon for all products as String
      */
-    @GetMapping(path = "/products", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/product", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> findAllProducts() {
 
         try {
@@ -143,7 +143,7 @@ public class WarehouseController {
      *
      * @return JSon for all products as String
      */
-    @PutMapping(path = "/products", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(path = "/product", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> findAllProducts(@RequestBody Products products) {
 
         try {

@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @EqualsAndHashCode
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Stock implements Serializable {
+public class InventoryStock implements Serializable {
     static final long serialVersionUID = -687991409288405033L;
     @JsonUnwrapped
     private List<Inventory> inventory;

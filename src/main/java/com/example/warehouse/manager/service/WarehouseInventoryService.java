@@ -1,7 +1,7 @@
 package com.example.warehouse.manager.service;
 
 import com.example.warehouse.manager.domain.Inventory;
-import com.example.warehouse.manager.domain.Stock;
+import com.example.warehouse.manager.domain.InventoryStock;
 import com.example.warehouse.manager.repository.WarehouseStockRepository;
 import com.example.warehouse.manager.util.MultipartFileReader;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -33,9 +33,9 @@ public class WarehouseInventoryService {
         // read json and write to db/cache
         String fileContentString = MultipartFileReader.saveFileAndGetContent(uri);
 
-        Stock stock = mapper.readValue(fileContentString, Stock.class);
+        InventoryStock inventoryStock = mapper.readValue(fileContentString, InventoryStock.class);
 
-        return stockRepository.save(stock);
+        return stockRepository.save(inventoryStock);
     }
 
     /**
@@ -60,12 +60,12 @@ public class WarehouseInventoryService {
     }
 
     public String removeInventory(long id) {
-        Stock stock = (Stock) stockRepository.findAll().get(0);
-        List<Inventory> filterByArtID = stock.getInventory()
+        InventoryStock inventoryStock = (InventoryStock) stockRepository.findAll().get(0);
+        List<Inventory> filterByArtID = inventoryStock.getInventory()
                 .stream()
                 .filter(c -> c.getArtId() != id)
                 .collect(Collectors.toList());
-        stock.setInventory(filterByArtID);
-        return stockRepository.save(stock);
+        inventoryStock.setInventory(filterByArtID);
+        return stockRepository.save(inventoryStock);
     }
 }

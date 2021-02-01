@@ -1,6 +1,6 @@
 package com.example.warehouse.manager.repository;
 
-import com.example.warehouse.manager.domain.Catalogue;
+import com.example.warehouse.manager.domain.ProductCatalogue;
 import com.example.warehouse.manager.domain.Products;
 import com.example.warehouse.manager.util.Constant;
 import org.springframework.data.redis.core.HashOperations;
@@ -20,8 +20,8 @@ public class WarehouseCatalogueRepository {
         this.hashOperations = this.redisTemplate.opsForHash();
     }
 
-    public String save(Catalogue catalogue) {
-        for (Products p : catalogue.getProducts()) {
+    public String save(ProductCatalogue productCatalogue) {
+        for (Products p : productCatalogue.getProducts()) {
             hashOperations.putIfAbsent(Constant.PRODUCT, p.getName(), p);
         }
         return "Products uploaded";

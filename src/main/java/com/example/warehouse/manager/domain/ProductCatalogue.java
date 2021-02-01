@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @EqualsAndHashCode
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Catalogue {
+public class ProductCatalogue {
     @JsonUnwrapped
     private List<Products> products;
 

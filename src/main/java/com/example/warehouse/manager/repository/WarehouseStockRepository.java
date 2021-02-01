@@ -1,7 +1,7 @@
 package com.example.warehouse.manager.repository;
 
 import com.example.warehouse.manager.domain.Inventory;
-import com.example.warehouse.manager.domain.Stock;
+import com.example.warehouse.manager.domain.InventoryStock;
 import com.example.warehouse.manager.util.Constant;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -21,8 +21,8 @@ public class WarehouseStockRepository {
         this.hashOperations = this.redisTemplate.opsForHash();
     }
 
-    public String save(Stock stock) {
-        for (Inventory i : stock.getInventory()) {
+    public String save(InventoryStock inventoryStock) {
+        for (Inventory i : inventoryStock.getInventory()) {
             hashOperations.putIfAbsent(Constant.STOCK, i.getArtId(), i);
         }
         return "Inventory uploaded successfully";
