@@ -4,8 +4,8 @@ import com.example.warehouse.manager.domain.Article;
 import com.example.warehouse.manager.domain.ProductCatalogue;
 import com.example.warehouse.manager.domain.Inventory;
 import com.example.warehouse.manager.domain.Products;
-import com.example.warehouse.manager.repository.WarehouseCatalogueRepository;
-import com.example.warehouse.manager.repository.WarehouseStockRepository;
+import com.example.warehouse.manager.repository.WarehouseProductRepository;
+import com.example.warehouse.manager.repository.WarehouseInventoryRepository;
 import com.example.warehouse.manager.util.MultipartFileReader;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,9 +20,9 @@ import java.util.List;
 public class WarehouseProductService {
     private static final ObjectMapper mapper = new ObjectMapper();
     @Autowired
-    WarehouseCatalogueRepository productRepository;
+    WarehouseProductRepository productRepository;
     @Autowired
-    WarehouseStockRepository stockRepository;
+    WarehouseInventoryRepository stockRepository;
 
     /**
      * readProductFile to populate inventory

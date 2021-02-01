@@ -2,7 +2,7 @@ package com.example.warehouse.manager.service;
 
 import com.example.warehouse.manager.domain.Inventory;
 import com.example.warehouse.manager.domain.InventoryStock;
-import com.example.warehouse.manager.repository.WarehouseStockRepository;
+import com.example.warehouse.manager.repository.WarehouseInventoryRepository;
 import com.example.warehouse.manager.util.MultipartFileReader;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,7 +20,7 @@ public class WarehouseInventoryService {
     private static final ObjectMapper mapper = new ObjectMapper();
 
     @Autowired
-    WarehouseStockRepository stockRepository;
+    WarehouseInventoryRepository stockRepository;
 
     /**
      * loadInventoryFile from http

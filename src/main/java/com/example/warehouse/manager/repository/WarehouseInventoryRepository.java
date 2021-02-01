@@ -10,13 +10,13 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public class WarehouseStockRepository {
+public class WarehouseInventoryRepository {
 
     private HashOperations hashOperations;
 
     private RedisTemplate redisTemplate;
 
-    public WarehouseStockRepository(RedisTemplate redisTemplate) {
+    public WarehouseInventoryRepository(RedisTemplate redisTemplate) {
         this.redisTemplate = redisTemplate;
         this.hashOperations = this.redisTemplate.opsForHash();
     }
