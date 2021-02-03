@@ -21,21 +21,9 @@ public class RedisConfiguration {
     @Value("${spring.redis.host}")
     private String host;
 
-//    @Bean
-//    public LettuceConnectionFactory redisConnectionFactory(final RedisProperties redisProperties) {
-//        return new LettuceConnectionFactory("localhost", 16370);
-//    }
-
     @Bean
-    public LettuceConnectionFactory redisConnectionFactory(
-            RedisProperties redisProperties) {
+    public LettuceConnectionFactory redisConnectionFactory() {
         return new LettuceConnectionFactory("localhost",6370);
     }
 
-//    @Bean
-//    public RedisTemplate<?, ?> redisTemplate(LettuceConnectionFactory connectionFactory) {
-//        RedisTemplate<byte[], byte[]> template = new RedisTemplate<>();
-//        template.setConnectionFactory(connectionFactory);
-//        return template;
-//    }
 }
