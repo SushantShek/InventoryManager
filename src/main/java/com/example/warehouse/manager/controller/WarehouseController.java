@@ -1,9 +1,12 @@
 package com.example.warehouse.manager.controller;
 
 import com.example.warehouse.manager.domain.Products;
+import com.example.warehouse.manager.exception.FileProcessingException;
+import com.example.warehouse.manager.exception.JsonParseOrProcessingException;
 import com.example.warehouse.manager.service.WarehouseInventoryService;
 import com.example.warehouse.manager.service.WarehouseProductService;
 import com.example.warehouse.manager.util.Constant;
+import com.example.warehouse.manager.util.MultipartFileReader;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,14 +37,18 @@ public class WarehouseController {
     @PostMapping(path = "/inventory")
     public ResponseEntity<String> loadInventory(@RequestPart("file") MultipartFile file) {
         if (null == file.getOriginalFilename()) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("File not found", HttpStatus.BAD_REQUEST);
+        }
+        if (!file.getOriginalFilename().endsWith(".json")) {
+            return new ResponseEntity<>("Invalid File Format. Expected JSON", HttpStatus.BAD_REQUEST);
         }
         try {
+            MultipartFileReader.JsonToJavaObject(file);
             String response = inventoryService.loadInventoryFile(file);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (IOException e) {
             log.error("Exception in loadInventory " + e);
-            return new ResponseEntity<>("Some exception while saving the data", HttpStatus.BAD_REQUEST);
+            throw new FileProcessingException("Some exception while saving the data");
         }
     }
 
@@ -61,7 +68,7 @@ public class WarehouseController {
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (JsonProcessingException e) {
             log.error("Exception in findAllInventory " + e);
-            return new ResponseEntity<>("Some exception while parsing JSON", HttpStatus.BAD_REQUEST);
+            throw new JsonParseOrProcessingException("Some exception while parsing JSON");
         }
     }
 
@@ -81,21 +88,9 @@ public class WarehouseController {
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (JsonProcessingException e) {
             log.error("Exception in getInventoryForID " + e);
-            return new ResponseEntity<>("Some exception while parsing JSON", HttpStatus.BAD_REQUEST);
+            throw new JsonParseOrProcessingException("Some exception while parsing JSON");
         }
     }
-
-    @DeleteMapping(path = "/inventory/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> removeInventoryForID(@PathVariable long id) {
-        try {
-            String response =inventoryService.removeInventory(id);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (Exception e) {
-            log.error("Exception in removeInventoryForID " + e);
-            return new ResponseEntity<>("Some exception while parsing JSON", HttpStatus.BAD_REQUEST);
-        }
-    }
-
     //***** Product Article request methods and Mappings *****
 
     /**
@@ -107,14 +102,17 @@ public class WarehouseController {
     @PostMapping(path = "/product")
     public ResponseEntity<String> loadProduct(@RequestPart("file") MultipartFile file) {
         if (null == file.getOriginalFilename()) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("File not found", HttpStatus.BAD_REQUEST);
+        }
+        if (!file.getOriginalFilename().endsWith(".json")) {
+            throw new FileProcessingException("Invalid File Format. Expected JSON");
         }
         try {
             String response = productService.loadProductFile(file);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (IOException e) {
             log.error("Exception in loadProduct " + e);
-            return new ResponseEntity<>("Some exception while saving the data", HttpStatus.BAD_REQUEST);
+            throw new FileProcessingException("Some exception while saving the data");
         }
     }
 
@@ -134,17 +132,17 @@ public class WarehouseController {
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (JsonProcessingException e) {
             log.error("Exception in findAllProducts " + e);
-            return new ResponseEntity<>("Some exception while parsing JSON", HttpStatus.BAD_REQUEST);
+            throw new JsonParseOrProcessingException("Some exception while parsing JSON");
         }
     }
 
     /**
      * findAllProducts
      *
-     * @return JSon for all products as String
+     * @return Json for all products as String
      */
     @PutMapping(path = "/product", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> findAllProducts(@RequestBody Products products) {
+    public ResponseEntity<String> updateProducts(@RequestBody Products products) {
 
         try {
             String response = productService.updateProducts(products);
@@ -154,9 +152,7 @@ public class WarehouseController {
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (JsonProcessingException e) {
             log.error("Exception in findAllProducts " + e);
-            return new ResponseEntity<>("Some exception while parsing JSON", HttpStatus.BAD_REQUEST);
+            throw new JsonParseOrProcessingException("Some exception while parsing JSON");
         }
     }
-
-
 }

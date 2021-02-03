@@ -2,10 +2,13 @@ package com.example.warehouse.manager.service;
 
 import com.example.warehouse.manager.domain.Inventory;
 import com.example.warehouse.manager.domain.InventoryStock;
+import com.example.warehouse.manager.exception.JsonParseOrProcessingException;
 import com.example.warehouse.manager.repository.WarehouseInventoryRepository;
-import com.example.warehouse.manager.util.MultipartFileReader;
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.RuntimeJsonMappingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,9 +34,14 @@ public class WarehouseInventoryService {
      */
     public String loadInventoryFile(MultipartFile uri) throws IOException {
         // read json and write to db/cache
-        String fileContentString = MultipartFileReader.saveFileAndGetContent(uri);
-
-        InventoryStock inventoryStock = mapper.readValue(fileContentString, InventoryStock.class);
+        InventoryStock inventoryStock;
+//        String fileContentString = MultipartFileReader.saveFileAndGetContent(uri);
+        try {
+            inventoryStock = mapper.readValue(uri.getBytes(), InventoryStock.class);
+        } catch (JsonParseException |
+                JsonMappingException jsonException) {
+            throw new JsonParseOrProcessingException("File could not be parsed or mapped to object");
+        }
 
         return stockRepository.save(inventoryStock);
     }
