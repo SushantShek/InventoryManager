@@ -66,14 +66,4 @@ public class WarehouseInventoryService {
     public String getInventoryById(long id) throws JsonProcessingException {
         return mapper.writeValueAsString(stockRepository.findById(id));
     }
-
-    public String removeInventory(long id) {
-        InventoryStock inventoryStock = (InventoryStock) stockRepository.findAll().get(0);
-        List<Inventory> filterByArtID = inventoryStock.getInventory()
-                .stream()
-                .filter(c -> c.getArtId() != id)
-                .collect(Collectors.toList());
-        inventoryStock.setInventory(filterByArtID);
-        return stockRepository.save(inventoryStock);
-    }
 }

@@ -28,7 +28,7 @@ public class WarehouseInventoryRepository {
         return "Inventory uploaded successfully";
     }
 
-    public List findAll() {
+    public List<Inventory> findAll() {
         return hashOperations.values(Constant.STOCK);
     }
 

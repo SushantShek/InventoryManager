@@ -36,7 +36,7 @@ class WarehouseInventoryRepositoryTest {
         save();
         List<Inventory> lst = inventoryRepository.findAll();
         assertTrue( lst.size() >0);
-
+        assertEquals(1,lst.get(0).getArtId());
     }
 
     @Test

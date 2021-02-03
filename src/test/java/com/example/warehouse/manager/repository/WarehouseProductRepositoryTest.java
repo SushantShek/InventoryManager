@@ -13,8 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = TestRedisConfiguration.class)
@@ -41,7 +40,7 @@ class WarehouseProductRepositoryTest {
     void findAll_product_as_list() {
         save_product_catalogue();
         List<Products> lst = productRepository.findAll();
-        assertEquals(1, lst.size());
+        assertTrue( lst.size() >0);
         assertEquals("test", lst.get(0).getName());
 
     }
