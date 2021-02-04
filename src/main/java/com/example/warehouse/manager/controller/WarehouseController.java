@@ -43,7 +43,6 @@ public class WarehouseController {
             return new ResponseEntity<>("Invalid File Format. Expected JSON", HttpStatus.BAD_REQUEST);
         }
         try {
-            MultipartFileReader.JsonToJavaObject(file);
             String response = inventoryService.loadInventoryFile(file);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (IOException e) {

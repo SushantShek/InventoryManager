@@ -7,12 +7,10 @@ import com.example.warehouse.manager.domain.Products;
 import com.example.warehouse.manager.exception.JsonParseOrProcessingException;
 import com.example.warehouse.manager.repository.WarehouseProductRepository;
 import com.example.warehouse.manager.repository.WarehouseInventoryRepository;
-import com.example.warehouse.manager.util.MultipartFileReader;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.RuntimeJsonMappingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,7 +24,7 @@ public class WarehouseProductService {
     @Autowired
     WarehouseProductRepository productRepository;
     @Autowired
-    WarehouseInventoryRepository stockRepository;
+    WarehouseInventoryRepository inventoryRepository;
 
     /**
      * readProductFile to populate inventory
@@ -38,7 +36,6 @@ public class WarehouseProductService {
         // read json and write to db/cache
         ProductCatalogue productCatalogue;
 //        String fileContentString = MultipartFileReader.saveFileAndGetContent(file);
-        System.out.println(file.getBytes().length);
         try {
              productCatalogue = mapper.readValue(file.getBytes(), ProductCatalogue.class);
         }catch (JsonParseException|JsonMappingException jsonException){
@@ -59,7 +56,7 @@ public class WarehouseProductService {
         List<Products> productList = productRepository.findAll();
         for (Products product : productList) {
             for (Article art : product.getArticle()) {
-                Inventory inv = (Inventory) stockRepository.findById(art.getArtId());
+                Inventory inv = (Inventory) inventoryRepository.findById(art.getArtId());
                 if(inv !=null)
                 art.setQuantity(inv.getStock());
             }
@@ -77,10 +74,10 @@ public class WarehouseProductService {
     public String updateProducts(Products product) throws JsonProcessingException {
         String response="No date to update";
             for (Article art : product.getArticle()) {
-                Inventory inv = (Inventory) stockRepository.findById(art.getArtId());
+                Inventory inv = (Inventory) inventoryRepository.findById(art.getArtId());
                 if (inv != null) {
                     inv.setStock(art.getQuantity());
-                    response = stockRepository.update(inv);
+                    response = inventoryRepository.update(inv);
                 }
             }
         return response;
