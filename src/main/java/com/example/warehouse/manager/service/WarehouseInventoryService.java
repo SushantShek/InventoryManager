@@ -1,6 +1,5 @@
 package com.example.warehouse.manager.service;
 
-import com.example.warehouse.manager.domain.Inventory;
 import com.example.warehouse.manager.domain.InventoryStock;
 import com.example.warehouse.manager.exception.JsonParseOrProcessingException;
 import com.example.warehouse.manager.repository.WarehouseInventoryRepository;
@@ -8,42 +7,49 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.RuntimeJsonMappingException;
+import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @Component
 public class WarehouseInventoryService {
 
-    private static final ObjectMapper mapper = new ObjectMapper();
+    private static final ObjectMapper MAPPER = new ObjectMapper();
+    private static final Gson GSON = new Gson();
 
     @Autowired
     WarehouseInventoryRepository stockRepository;
 
+
     /**
      * loadInventoryFile from http
      *
-     * @param uri file located in temp folder
+     * @param file located in temp folder
      * @return String of the content of file
      * @throws IOException file reading and writting
      */
-    public String loadInventoryFile(MultipartFile uri) throws IOException {
+    public String loadInventoryFile(MultipartFile file) throws IOException {
         // read json and write to db/cache
-        InventoryStock inventoryStock;
-//        String fileContentString = MultipartFileReader.saveFileAndGetContent(uri);
-        try {
-            inventoryStock = mapper.readValue(uri.getBytes(), InventoryStock.class);
-        } catch (JsonParseException |
-                JsonMappingException jsonException) {
-            throw new JsonParseOrProcessingException("File could not be parsed or mapped to object");
-        }
+        Path tempFile = Files.createTempFile(null, null);
+        // write a line
+        Files.write(tempFile, file.getBytes());
+        BufferedReader reader = Files.newBufferedReader(tempFile);
 
-        return stockRepository.save(inventoryStock);
+        try {
+            InventoryStock inventoryStock = MAPPER.readValue(reader, InventoryStock.class);
+            return stockRepository.save(inventoryStock);
+        } catch (JsonParseException | JsonMappingException jsonException) {
+            throw new JsonParseOrProcessingException("File could not be parsed or mapped to object");
+        }finally {
+            Files.delete(tempFile);
+        }
     }
 
     /**
@@ -53,7 +59,7 @@ public class WarehouseInventoryService {
      * @throws JsonProcessingException if value cannot be mapped to Object
      */
     public String getAllInventory() throws JsonProcessingException {
-        return mapper.writeValueAsString(stockRepository.findAll());
+        return MAPPER.writeValueAsString(stockRepository.findAll());
     }
 
     /**
@@ -64,6 +70,6 @@ public class WarehouseInventoryService {
      * @throws JsonProcessingException if value cannot be mapped to Object
      */
     public String getInventoryById(long id) throws JsonProcessingException {
-        return mapper.writeValueAsString(stockRepository.findById(id));
+        return MAPPER.writeValueAsString(stockRepository.findById(id));
     }
 }

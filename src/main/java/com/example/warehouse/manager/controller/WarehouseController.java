@@ -6,7 +6,6 @@ import com.example.warehouse.manager.exception.JsonParseOrProcessingException;
 import com.example.warehouse.manager.service.WarehouseInventoryService;
 import com.example.warehouse.manager.service.WarehouseProductService;
 import com.example.warehouse.manager.util.Constant;
-import com.example.warehouse.manager.util.MultipartFileReader;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
